@@ -1,0 +1,11 @@
+services:
+  agent:
+    build:
+      context: .
+    container_name: agentic-bots-with-tools
+    env_file:
+      - .env
+    working_dir: /app
+    command: python backend.py
+    volumes:
+      - .:/app

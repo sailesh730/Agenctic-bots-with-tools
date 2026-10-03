@@ -1,0 +1,13 @@
+.git
+.gitignore
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+chatbot.db
+faiss-db/
+.env
+.env.*
+.DS_Store
