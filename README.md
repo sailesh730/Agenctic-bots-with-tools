@@ -94,6 +94,12 @@ response = app.invoke(
 
 This is a basic test of the graph and tool orchestration.
 
+To launch the Streamlit chat interface, run:
+
+```bash
+streamlit run frontend.py
+```
+
 ## Docker setup
 
 This project includes Docker support so you can run the agent in a container.

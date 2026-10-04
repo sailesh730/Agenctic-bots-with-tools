@@ -5,9 +5,10 @@ Streamlit frontend for the LangGraph multi-tool chatbot
 Backend file must be named `backend.py` in the same folder.
 
 Run with:
-    streamlit run frontend_v2.py
+    streamlit run frontend.py
 """
 
+import hashlib
 import os
 import tempfile
 import time
@@ -71,6 +72,8 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 if "indexed_pdf" not in st.session_state:
     st.session_state.indexed_pdf = None
+if "indexed_pdf_hash" not in st.session_state:
+    st.session_state.indexed_pdf_hash = None
 if "pending_interrupt" not in st.session_state:
     st.session_state.pending_interrupt = None
 
@@ -79,13 +82,10 @@ CONFIG = {"configurable": {"thread_id": st.session_state.thread_id}}
 
 def get_pending_interrupt():
     """Return the interrupt message if the graph is paused, else None."""
-    try:
-        snapshot = app.get_state(CONFIG)
-        for task in snapshot.tasks:
-            for it in task.interrupts:
-                return str(it.value)
-    except Exception:
-        pass
+    snapshot = app.get_state(CONFIG)
+    for task in snapshot.tasks:
+        for it in task.interrupts:
+            return str(it.value)
     return None
 
 
@@ -95,14 +95,22 @@ def get_pending_interrupt():
 with st.sidebar:
     st.subheader("📄 Chat with a PDF")
     pdf = st.file_uploader("Upload a PDF", type="pdf")
-    if pdf is not None and st.session_state.indexed_pdf != pdf.name:
+    if pdf is not None:
+        pdf_bytes = pdf.getvalue()
+        pdf_hash = hashlib.sha256(pdf_bytes).hexdigest()
+    else:
+        pdf_bytes = None
+        pdf_hash = None
+
+    if pdf is not None and st.session_state.indexed_pdf_hash != pdf_hash:
         with st.spinner("Indexing PDF..."):
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-                tmp.write(pdf.getbuffer())
+                tmp.write(pdf_bytes)
                 tmp_path = tmp.name
             try:
                 rag_document(tmp_path)  # builds + saves the FAISS index
                 st.session_state.indexed_pdf = pdf.name
+                st.session_state.indexed_pdf_hash = pdf_hash
                 st.success(f"Indexed: {pdf.name}")
             except Exception as e:
                 st.error(f"Could not index PDF: {e}")
