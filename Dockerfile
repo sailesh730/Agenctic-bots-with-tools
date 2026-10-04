@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY . .
 
-CMD ["python", "backend.py"]
+CMD ["python", "-m", "streamlit", "run", "frontend.py", "--server.address=0.0.0.0", "--server.port=8501"]

@@ -6,6 +6,8 @@ services:
     env_file:
       - .env
     working_dir: /app
-    command: python backend.py
+    command: python -m streamlit run frontend.py --server.address=0.0.0.0 --server.port=8501
+    ports:
+      - "8501:8501"
     volumes:
       - .:/app

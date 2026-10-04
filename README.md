@@ -97,7 +97,7 @@ This is a basic test of the graph and tool orchestration.
 To launch the Streamlit chat interface, run:
 
 ```bash
-streamlit run frontend.py
+python -m streamlit run frontend.py
 ```
 
 ## Docker setup
@@ -110,13 +110,15 @@ This project includes Docker support so you can run the agent in a container.
    copy .env.example .env
    ```
 
-2. Build and run the container:
+2. Build and run the Streamlit app:
 
    ```bash
    docker compose up --build
    ```
 
-3. To stop the container:
+3. Open [http://localhost:8501](http://localhost:8501) in your browser.
+
+4. To stop the container:
 
    ```bash
    docker compose down
